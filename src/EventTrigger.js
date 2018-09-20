@@ -3,6 +3,7 @@ function EventTrigger(callback, options) {
     //Defaults, used to set the options
     var defaults = {
         trigger: 'exitIntent',
+        timeout: 0,
         percentDown: 50,
         percentUp: 5,
         checkInterval: 200
@@ -10,14 +11,24 @@ function EventTrigger(callback, options) {
 
     this.complete = false; //Used to check if callback has been executed so that it won't get executed more than once
     this.interval = null;
+    this.timer = null;
     this.callback = callback; //Sets the callback pased to function
-    this.options = $.extend(defaults, options); //set options or defaults
+    this.options = {
+        trigger: (options.trigger == null) ? defaults.trigger : options.trigger,
+        timeout: (options.timeout == null) ? defaults.timeout : options.timeout,
+        percentDown: (options.percentDown == null) ? defaults.percentDown : options.percentDown,
+        percentUp: (options.percentUp == null) ? defaults.percentUp : options.percentUp,
+        checkInterval: (options.checkInterval == null) ? defaults.checkInterval : options.checkInterval
+    } //set options or defaults
 
     //Initializer
     this.init = function(){
         switch(this.options.trigger){
+            case "timeout":
+            this.timeoutHandler();
+            break;
             case "exitIntent":
-            this.exitIntent();
+            this.exitIntentHandler();
             break;
             case "scrollDown":
             this.scrollDownHandler();
@@ -28,8 +39,14 @@ function EventTrigger(callback, options) {
         }
     }
 
+
+    //Handler for timeout to trigger a function
+    this.timeoutHandler = function(){
+        this.timer = setTimeout(this.callback, this.options.timeout);
+    }
+
     //Handler for exit intent to trigger a function
-    this.exitIntent = function(){
+    this.exitIntentHandler = function(){
         let trigger = this;
             
         document.addEventListener("mouseleave", function(e){
