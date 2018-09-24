@@ -2,7 +2,7 @@ function EventTrigger(callback, options) {
 
     //Defaults, used to set the options
     var defaults = {
-        trigger: 'exitIntent',
+        trigger: 'timeout',
         timeout: 0,
         percentDown: 50,
         percentUp: 5,
