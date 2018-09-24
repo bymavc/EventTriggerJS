@@ -40,7 +40,7 @@ var et4 = new EventTrigger(testAlert, {trigger: 'scrollUp', percentUp: 10});
 //You can use triggers inside other triggers
 //Triggers after scrolling down 50% of the page and then scrolling up 10% of the page
 var et5 = new EventTrigger(function(){
-    et6 = new EventTrigger(testAlert, {trigger: 'scrollUp', percentUp: 10})
+    var et6 = new EventTrigger(testAlert, {trigger: 'scrollUp', percentUp: 10})
 },{trigger: 'scrollDown', percentDown: 50})
 
 ```
