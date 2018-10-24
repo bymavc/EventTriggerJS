@@ -13,7 +13,8 @@ var et = new EventTrigger(callback, options);
 
 |Option|Default|Type|Description|
 |---|:---:|:---:|---|
-|trigger|`timeout`|`string`|The event to trigger callback function: `timeout`, `exitIntent`, `scrollDown` or `scrollUp`.|
+|trigger|`timeout`|`string`|The event to trigger callback function: `timeout`,`target`, `exitIntent`, `scrollDown` or `scrollUp`.|
+|target|`""`|`string`|The ID of a DOM element to use as a reference for the trigger.
 |timeout|`0`|`number`|Time in miliseconds that needs to pass to trigger the callback function.|
 |percentDown|`50`|`number`|Percentage of the document that needs to be scrolled down to trigger callback function.|
 |percentUp|`5`|`number`|Percentage of the document that need to be scrolled up to trigger callback function.|
@@ -28,19 +29,22 @@ function testAlert(){
 //Triggers after 5 seconds
 var et1 = new EventTrigger(testAlert, {trigger: 'timeout', timeout: 5000});
 
+//Triggers when reaches the DOM element
+var et2 = new EventTrigger(testAlert, {trigger: 'target', target: "elementID"})
+
 //Triggers when mouse leaves the page
-var et2 = new EventTrigger(testAlert, {trigger: 'exitIntent'});
+var et3 = new EventTrigger(testAlert, {trigger: 'exitIntent'});
 
 //Triggers when scroll down 60% of the page
-var et3 = new EventTrigger(testAlert, {trigger: 'scrollDown', percentDown: 60});
+var et4 = new EventTrigger(testAlert, {trigger: 'scrollDown', percentDown: 60});
 
 //Triggers when scroll up 10% of the page
-var et4 = new EventTrigger(testAlert, {trigger: 'scrollUp', percentUp: 10});
+var et5 = new EventTrigger(testAlert, {trigger: 'scrollUp', percentUp: 10});
 
 //You can use triggers inside other triggers
 //Triggers after scrolling down 50% of the page and then scrolling up 10% of the page
-var et5 = new EventTrigger(function(){
-    var et6 = new EventTrigger(testAlert, {trigger: 'scrollUp', percentUp: 10})
+var et6 = new EventTrigger(function(){
+    var et7 = new EventTrigger(testAlert, {trigger: 'scrollUp', percentUp: 10})
 },{trigger: 'scrollDown', percentDown: 50})
 
 ```

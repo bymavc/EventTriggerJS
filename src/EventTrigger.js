@@ -1,51 +1,106 @@
 function EventTrigger(callback, options) {
 
-    //Defaults, used to set the options
+    /**
+     * Merge defaults with user options
+     * @param {Object} defaults 
+     * @param {Object} options 
+     * @returns {Object} Merged values of defaults and options
+     */
+    let extend = function (defaults, options) {
+        let extended = {};
+        let p;
+        for (opt in defaults) {
+            if (Object.prototype.hasOwnProperty.call(defaults, p)) {
+                extended[p] = defaults[p];
+            }
+        }
+        for (opt in options) {
+            if (Object.prototype.hasOwnProperty.call(options, p)) {
+                extended[p] = options[p];
+            }
+        }
+        return extended;
+    }
+
+    /**
+     * Default options
+     * If no options are given
+     */
     var defaults = {
         trigger: 'timeout',
+        target: '',
         timeout: 0,
         percentDown: 50,
         percentUp: 5,
         checkInterval: 200
     };
 
-    this.complete = false; //Used to check if callback has been executed so that it won't get executed more than once
-    this.interval = null;
-    this.timer = null;
-    this.callback = callback; //Sets the callback pased to function
-    this.options = {
-        trigger: (options.trigger == null) ? defaults.trigger : options.trigger,
-        timeout: (options.timeout == null) ? defaults.timeout : options.timeout,
-        percentDown: (options.percentDown == null) ? defaults.percentDown : options.percentDown,
-        percentUp: (options.percentUp == null) ? defaults.percentUp : options.percentUp,
-        checkInterval: (options.checkInterval == null) ? defaults.checkInterval : options.checkInterval
-    } //set options or defaults
+    this.complete = false;                      // Contains if the trigger has been fire
+    this.interval = null;                       // Contains the amount of time between intervals
+    this.timer = null;                          // Contains the timeout set when trigger is timeout
+    this.callback = callback;                   // Contains the callback function
+    this.options = extend(defaults, options);   // Contains the options for the current trigger set
 
-    //Initializer
+    /**
+     * Initialize the event trigger
+     */
     this.init = function(){
         switch(this.options.trigger){
             case "timeout":
-            this.timeoutHandler();
-            break;
+                this.timeoutHandler();
+                break;
+            case "target":
+                this.targetHandler();
+                break;
             case "exitIntent":
-            this.exitIntentHandler();
-            break;
+                this.exitIntentHandler();
+                break;
             case "scrollDown":
-            this.scrollDownHandler();
-            break;
+                this.scrollDownHandler();
+                break;
             case "scrollUp":
-            this.scrollUpHandler();
-            break;
+                this.scrollUpHandler();
+                break;
         }
     }
 
-
-    //Handler for timeout to trigger a function
+    /**
+     * Handler for Timeout Based Trigger
+     * Triggers callback function when timeout finishes
+     */
     this.timeoutHandler = function(){
         this.timer = setTimeout(this.callback, this.options.timeout);
     }
 
-    //Handler for exit intent to trigger a function
+    /**
+     * Handler for Target Based Trigger
+     * Triggers callback function when scroll reaches the specified DOM element
+     */
+    this.targetHandler = function () {
+        if (!document.getElementById(this.options.target)) {
+            this.complete = true;
+        } else {
+            let targetPosition = document.getElementById(this.options.target).offsetTop;
+            
+            let trigger = this;
+
+            this.interval = setInterval(function () { 
+                if (window.scrollY >= targetPosition) {
+                    clearInterval(trigger.interval);
+                    trigger.interval = null;
+                    if (!trigger.complete) {
+                        trigger.callback();
+                        trigger.complete = true;
+                    }
+                }
+            }, this.options.checkInterval);
+        }
+    }
+
+    /**
+     * Handler for Exit Intent Based Trigger
+     * Triggers callback function when mouse leaves the window
+     */
     this.exitIntentHandler = function(){
         let trigger = this;
             
@@ -58,7 +113,10 @@ function EventTrigger(callback, options) {
         });
     }
 
-    //Handler for scroll up to trigger function based on scroll percentage
+    /**
+     * Handler for Scroll Up Based Trigger
+     * Triggers callback function when scroll reaches the specified percentage of the page 
+     */
     this.scrollUpHandler = function(){
         let scrollStart = window.scrollY;
         let pageHeight = document.body.clientHeight;
@@ -88,7 +146,10 @@ function EventTrigger(callback, options) {
         }
     }
 
-    //Handler for scroll down to trigger function based on scroll percentage
+    /**
+     * Handler for Scroll Down Based Trigger
+     * Triggers callback function when scroll reaches the specified percentage of the page 
+     */
     this.scrollDownHandler = function(){
         let scrollStart = window.scrollY;
         let pageHeight = document.body.clientHeight;
@@ -118,6 +179,8 @@ function EventTrigger(callback, options) {
         }
     }
 
-    //Initialize checker
+    /**
+     * Initialize checkers
+     */
     this.init();
 }
