@@ -1,3 +1,15 @@
+/**
+ * Summary.
+ * @file This file defines the Event Trigger function
+ * @author bymavc.
+ * @since 10.31.2018
+ */
+
+/**
+ * Sets an function to be triggered on specific events
+ * @param {function} callback 
+ * @param {Object} options 
+ */
 function EventTrigger(callback, options) {
 
     /**
@@ -105,7 +117,7 @@ function EventTrigger(callback, options) {
         let trigger = this;
             
         document.addEventListener("mouseleave", function(e){
-            if(!trigger.complete && e.clientY < 0) { 
+            if(!trigger.complete) { 
                 trigger.callback();
                 trigger.complete = true;
                 document.removeEventListener("mouseleave");
