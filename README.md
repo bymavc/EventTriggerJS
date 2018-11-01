@@ -18,7 +18,7 @@ var et = new EventTrigger(callback, options);
 |timeout|`0`|`number`|Time in miliseconds that needs to pass to trigger the callback function.|
 |percentDown|`50`|`number`|Percentage of the document that needs to be scrolled down to trigger callback function.|
 |percentUp|`5`|`number`|Percentage of the document that need to be scrolled up to trigger callback function.|
-|checkInterval|`200`|`number`|Time to check if conditions are meet to trigger callback function.|
+|checkInterval|`200`|`number`|Time in miliseconds to check if conditions are meet to trigger callback function.|
 
 ### Example
 ```javascript
