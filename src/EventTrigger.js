@@ -2,7 +2,7 @@
  * Summary.
  * @file This file defines the Event Trigger function
  * @author bymavc.
- * @since 10.31.2018
+ * @version 1.0.2
  */
 
 /**
