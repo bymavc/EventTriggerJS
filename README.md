@@ -1,7 +1,7 @@
 # EventTriggerJS
 A Vanilla Javascript function to trigger functions based in some specific events.
 
-This is useful if you want to show a Modal or to make a Anouncement in an smarter way than just popping it up when page loads, works both for Web and Mobile devices.
+This is useful if you want to show a Modal or to make an anouncement in an smarter way than just popping it up when page loads, works both for Web and Mobile devices.
 
 ### Basic Usage
 
