@@ -61,8 +61,11 @@ function EventTrigger(callback, options) {
             case "timeout":
                 this.timeoutHandler();
                 break;
-            case "target":
-                this.targetHandler();
+            case "targetIn":
+                this.targetInHandler();
+                break;
+            case "targetOut":
+                this.targetOutHandler();
                 break;
             case "exitIntent":
                 this.exitIntentHandler();
@@ -76,6 +79,17 @@ function EventTrigger(callback, options) {
         }
     }
 
+    function isOnViewport(el) {
+        var rect = el.getBoundingClientRect();
+
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
     /**
      * Handler for Timeout Based Trigger
      * Triggers callback function when timeout finishes
@@ -85,19 +99,44 @@ function EventTrigger(callback, options) {
     }
 
     /**
-     * Handler for Target Based Trigger
-     * Triggers callback function when scroll reaches the specified DOM element
+     * Handler for Target in viewport Based Trigger
+     * Triggers callback function when element is in viewport
      */
-    this.targetHandler = function () {
+    this.targetInHandler = function () {
         if (!document.getElementById(this.options.target)) {
             this.complete = true;
         } else {
-            let targetPosition = document.getElementById(this.options.target).offsetTop;
+            let target = document.getElementById(this.options.target);
             
             let trigger = this;
 
             this.interval = setInterval(function () { 
-                if (window.scrollY >= targetPosition) {
+                if (isOnViewport(target)) {
+                    clearInterval(trigger.interval);
+                    trigger.interval = null;
+                    if (!trigger.complete) {
+                        trigger.callback();
+                        trigger.complete = true;
+                    }
+                }
+            }, this.options.checkInterval);
+        }
+    }
+
+    /**
+     * Handler for Target out of viewport Based Trigger
+     * Triggers callback function when element is out of viewport
+     */
+    this.targetOutHandler = function () {
+        if (!document.getElementById(this.options.target)) {
+            this.complete = true;
+        } else {
+            let target = document.getElementById(this.options.target);
+
+            let trigger = this;
+
+            this.interval = setInterval(function () { 
+                if (!isOnViewport(target)) {
                     clearInterval(trigger.interval);
                     trigger.interval = null;
                     if (!trigger.complete) {
